@@ -36,10 +36,30 @@ public class ThirdPersonShooterController : MonoBehaviour
     private void Update()
     {
         // AIMING
+        // Player is offset compared with the crosshair, fortunately the crosshair is screen-centered
+        Vector3 mouseWorldPosition = Vector3.zero;
+        Vector2 screenCenterPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        Ray ray = Camera.main.ScreenPointToRay(screenCenterPoint);
+        if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f, aimColliderLayerMask))
+        {
+            debugTransform.position = raycastHit.point;
+            mouseWorldPosition = raycastHit.point;
+        }
+
+
         if (starterAssetsInputs.aim)
         {
+            // Switch to zoom in
             aimVirtualCamera.gameObject.SetActive(true);
             thirdPersonController.SetSensitivity(aimSensitivity);
+
+            // Compute direction
+            Vector3 worldAimTarget = mouseWorldPosition;
+            worldAimTarget.y = transform.position.y;
+            Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
+
+            // Rotate the player
+            transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * 20f); // Alternative to Quaternion
         } else
         {
             aimVirtualCamera.gameObject.SetActive(false);
@@ -47,12 +67,7 @@ public class ThirdPersonShooterController : MonoBehaviour
         }
 
         // SHOOTING
-        Vector2 screenCenterPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
-        Ray ray = Camera.main.ScreenPointToRay(screenCenterPoint);
-        if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f, aimColliderLayerMask))
-        {
-            debugTransform.position = raycastHit.point;
-        }
+        
     }
 
 
