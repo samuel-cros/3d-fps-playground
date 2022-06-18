@@ -52,6 +52,7 @@ public class ThirdPersonShooterController : MonoBehaviour
             // Switch to zoom in
             aimVirtualCamera.gameObject.SetActive(true);
             thirdPersonController.SetSensitivity(aimSensitivity);
+            thirdPersonController.SetRotateOnMove(false); // Stop the character controller script from rotating the player when zooming
 
             // Compute direction
             Vector3 worldAimTarget = mouseWorldPosition;
@@ -64,6 +65,7 @@ public class ThirdPersonShooterController : MonoBehaviour
         {
             aimVirtualCamera.gameObject.SetActive(false);
             thirdPersonController.SetSensitivity(aimSensitivity);
+            thirdPersonController.SetRotateOnMove(true); // Allow the character controller script to rotate the player when not zooming
         }
 
         // SHOOTING
